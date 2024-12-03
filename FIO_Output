@@ -1,0 +1,13 @@
+import subprocess
+
+def run_benchmark(command):
+    """Run a benchmark command and return its output."""
+    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    return process.stdout
+
+# Example usage:
+fio_command = ["fio", "--name=example", "--rw=randwrite", "--bs=4k", "--size=2M", "--numjobs=1", "--runtime=30", "--time_based"]
+
+# Run benchmarks
+fio_output = run_benchmark(fio_command)
+print("Raw FIO Output:\n",fio_output)
