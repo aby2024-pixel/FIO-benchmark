@@ -1,0 +1,57 @@
+import matplotlib.pyplot as plt
+import logging
+import numpy as np
+import requests
+
+# Set up logging for better traceability
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Adding variability and analysis features for SSD and RAM Disk performance
+logger.info("Starting SSD vs RAM Disk Performance Analysis with Additional Features")
+
+# Simulating SSD and RAM disk performance data collection with additional metrics
+ssd_performance = [500, 520, 510, 530, 525]  # Example performance data in MB/s
+ram_disk_performance = [3000, 3100, 3050, 3200, 3150]  # Example performance data in MB/s
+
+# Calculating average performance
+ssd_avg = np.mean(ssd_performance)
+ram_disk_avg = np.mean(ram_disk_performance)
+
+logger.info(f"Average SSD Performance: {ssd_avg} MB/s")
+logger.info(f"Average RAM Disk Performance: {ram_disk_avg} MB/s")
+
+# Plotting SSD and RAM Disk Performance
+plt.figure(figsize=(12, 7))
+plt.plot(ssd_performance, marker='o', linestyle='-', color='r', label='SSD Performance (MB/s)')
+plt.plot(ram_disk_performance, marker='o', linestyle='-', color='g', label='RAM Disk Performance (MB/s)')
+plt.xlabel('Test Number')
+plt.ylabel('Performance (MB/s)')
+#plt.title('SSD vs RAM Disk Performance Analysis')
+plt.legend()
+plt.grid(True)
+#plt.savefig('ssd_ram_disk_performance.png')
+plt.show()
+
+# Adding performance trend analysis and performance variability
+logger.info("Enhancing Performance Analysis with Trend and Variability")
+
+ssd_variability = np.std(ssd_performance)
+ram_disk_variability = np.std(ram_disk_performance)
+
+logger.info(f"SSD Performance Variability (Standard Deviation): {ssd_variability}")
+logger.info(f"RAM Disk Performance Variability (Standard Deviation): {ram_disk_variability}")
+
+# Plotting performance trends
+plt.figure(figsize=(12, 7))
+plt.plot(ssd_performance, marker='o', linestyle='-', color='r', label='SSD Performance (MB/s)')
+plt.plot(ram_disk_performance, marker='o', linestyle='-', color='g', label='RAM Disk Performance (MB/s)')
+plt.axhline(y=ssd_avg, color='r', linestyle='--', label='SSD Average Performance')
+plt.axhline(y=ram_disk_avg, color='g', linestyle='--', label='RAM Disk Average Performance')
+plt.xlabel('Test Number')
+plt.ylabel('Performance (MB/s)')
+plt.title('Enhanced SSD vs RAM Disk Performance Analysis with Trends')
+plt.legend()
+plt.grid(True)
+#plt.savefig('enhanced_ssd_ram_disk_performance.png')
+plt.show()
