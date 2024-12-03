@@ -1,0 +1,106 @@
+import matplotlib.pyplot as plt
+import re
+
+# Sample Sysbench output (replace this with actual output for real graphs)
+sysbench_output = """
+File operations:
+    reads/s:                      450
+    writes/s:                     300
+    fsyncs/s:                     50
+
+Throughput:
+    read, MiB/s:                  4.50
+    written, MiB/s:               3.00
+
+Latency (ms):
+         min: 0.05, avg: 0.10, max: 0.50
+"""
+
+# Function to parse Sysbench output
+def parse_sysbench_output(output):
+    metrics = {
+        "reads_per_sec": 0,
+        "writes_per_sec": 0,
+        "fsyncs_per_sec": 0,
+        "read_throughput": 0.0,
+        "write_throughput": 0.0,
+        "latency_min": 0.0,
+        "latency_avg": 0.0,
+        "latency_max": 0.0
+    }
+    
+    # Extracting file operations
+    reads_match = re.search(r"reads/s:\s+(\d+)", output)
+    writes_match = re.search(r"writes/s:\s+(\d+)", output)
+    fsyncs_match = re.search(r"fsyncs/s:\s+(\d+)", output)
+    
+    if reads_match:
+        metrics["reads_per_sec"] = int(reads_match.group(1))
+    if writes_match:
+        metrics["writes_per_sec"] = int(writes_match.group(1))
+    if fsyncs_match:
+        metrics["fsyncs_per_sec"] = int(fsyncs_match.group(1))
+    
+    # Extracting throughput
+    read_throughput_match = re.search(r"read, MiB/s:\s+([\d.]+)", output)
+    write_throughput_match = re.search(r"written, MiB/s:\s+([\d.]+)", output)
+    
+    if read_throughput_match:
+        metrics["read_throughput"] = float(read_throughput_match.group(1))
+    if write_throughput_match:
+        metrics["write_throughput"] = float(write_throughput_match.group(1))
+    
+    # Extracting latency
+    latency_min_match = re.search(r"min:\s+([\d.]+)", output)
+    latency_avg_match = re.search(r"avg:\s+([\d.]+)", output)
+    latency_max_match = re.search(r"max:\s+([\d.]+)", output)
+    
+    if latency_min_match:
+        metrics["latency_min"] = float(latency_min_match.group(1))
+    if latency_avg_match:
+        metrics["latency_avg"] = float(latency_avg_match.group(1))
+    if latency_max_match:
+        metrics["latency_max"] = float(latency_max_match.group(1))
+    
+    return metrics
+
+# Parse the sample output
+parsed_metrics = parse_sysbench_output(sysbench_output)
+
+# Visualization
+def plot_metrics(metrics):
+    # Bar chart for reads, writes, and fsyncs
+    operations = ["Reads", "Writes", "Fsyncs"]
+    values = [metrics["reads_per_sec"], metrics["writes_per_sec"], metrics["fsyncs_per_sec"]]
+    
+    plt.figure(figsize=(10, 6))
+    plt.bar(operations, values, color="skyblue")
+    plt.title("File Operations Per Second")
+    plt.ylabel("Operations Per Second")
+    plt.grid(axis="y")
+    plt.show()
+
+    # Bar chart for throughput
+    throughput = ["Read Throughput", "Write Throughput"]
+    throughput_values = [metrics["read_throughput"], metrics["write_throughput"]]
+    
+    plt.figure(figsize=(10, 6))
+    plt.bar(throughput, throughput_values, color="lightgreen")
+    plt.title("Throughput (MiB/s)")
+    plt.ylabel("Throughput (MiB/s)")
+    plt.grid(axis="y")
+    plt.show()
+
+    # Line graph for latency
+    latency_labels = ["Min Latency", "Avg Latency", "Max Latency"]
+    latency_values = [metrics["latency_min"], metrics["latency_avg"], metrics["latency_max"]]
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(latency_labels, latency_values, marker='o', linestyle='-', color="orange")
+    plt.title("Latency (ms)")
+    plt.ylabel("Latency (ms)")
+    plt.grid()
+    plt.show()
+
+# Plot the parsed metrics
+plot_metrics(parsed_metrics)
