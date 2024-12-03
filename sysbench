@@ -1,0 +1,43 @@
+import subprocess
+
+def run_benchmark(command):
+    """Run a benchmark command and return its output."""
+    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if process.returncode != 0:
+        print(f"Error: Command {' '.join(command)} failed.")
+        print(f"stderr: {process.stderr}")
+    return process.stdout
+
+# Step 1: Cleanup old test files
+cleanup_command = ["sysbench", "fileio", "cleanup"]
+print("Cleaning up old test files...")
+print(run_benchmark(cleanup_command))
+
+# Step 2: Prepare test files
+sysbench_prepare_command = ["sysbench", "fileio", "--file-total-size=1G", "prepare"]
+print("Preparing test files...")
+prepare_output = run_benchmark(sysbench_prepare_command)
+print("Prepare Output:\n", prepare_output)
+
+# Verify if the test files were created
+print("Verifying test files...")
+for i in range(128):  # Check for 128 files (as each is 16MiB for 1G total)
+    print(f"test_file.{i}")
+
+# Step 3: Run the CPU benchmark
+sysbench_cpu = ["sysbench", "cpu", "--threads=4", "run"]
+print("Running Sysbench CPU benchmark...")
+cpu_output = run_benchmark(sysbench_cpu)
+print("Raw CPU Output:\n", cpu_output)
+
+#step 4:Run the Memory
+#sysbench memory --threads=$(nproc) run
+sysbench_memory = ["sysbench", "memory", "--threads=4", "run"]
+print("Running Sysbench Memory benchmark...")
+memory_output = run_benchmark(sysbench_memory)
+print("Raw Memory Output:\n", memory_output)
+
+# Step 5: Cleanup test files after the benchmark
+print("Cleaning up Sysbench test files...")
+cleanup_output = run_benchmark(cleanup_command)
+print("Cleanup Output:\n", cleanup_output)
