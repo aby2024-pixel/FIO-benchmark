@@ -80,7 +80,7 @@ Installing FIO
 sudo apt-get update
 sudo apt-get install fio
 
-Insatlling sysbench
+Installing sysbench
 
 sudo apt update
 sudo apt install -y sysbench
